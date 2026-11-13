@@ -193,9 +193,10 @@ local function itemRows(id)
     for i = 1, n do
         local r = AH.GetItemSearchResultInfo(key, i)
         if r and r.buyoutAmount and r.buyoutAmount > 0 and not r.containsOwnerItem then
-            local qty = r.quantity or 1
-            rows[#rows + 1] = { auctionID = r.auctionID, buyout = r.buyoutAmount, qty = qty,
-                                unit = r.buyoutAmount / qty, link = r.itemLink,
+            -- Be conservative: a search row can represent several identical listings (quantity > 1),
+            -- but one PlaceBid buys ONE of them for buyoutAmount. Never divide the price by the quantity.
+            rows[#rows + 1] = { auctionID = r.auctionID, buyout = r.buyoutAmount, qty = 1,
+                                unit = r.buyoutAmount, link = r.itemLink, listed = r.quantity,
                                 owner = r.owners and r.owners[1] }
         end
     end
