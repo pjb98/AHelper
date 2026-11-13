@@ -138,7 +138,7 @@ local handlers = {}
 function ns.On(event, fn)
     if not handlers[event] then
         handlers[event] = {}
-        frame:RegisterEvent(event)
+        pcall(frame.RegisterEvent, frame, event) -- ignore events this client does not have
     end
     table.insert(handlers[event], fn)
 end

@@ -12,6 +12,7 @@ FarmDB.lua
 ExternalData.lua
 Data.lua
 Scanner.lua
+ScannerModern.lua
 Analysis.lua
 BuyPopup.lua
 Sell.lua

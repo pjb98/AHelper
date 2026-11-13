@@ -90,6 +90,10 @@ Most settings can also be changed on the **Settings** tab.
 
 ## Notes / limits
 
+- Works with both auction house systems: the old Classic one and the modern one that WoW Forever uses (`C_AuctionHouse`). On the modern one:
+  - Stackable goods (cloth, herbs, ore...) are bought as "commodities". The popup asks the server for a live price first, so the Buy button says *Checking...* for a moment. It then buys the cheapest units, and shows *(price changed)* if the total moved.
+  - Gear is bought as a specific auction found by a live search.
+
 - Blizzard requires a real mouse click for every purchase, so the addon can't buy automatically. That's why it uses a popup with a Buy button.
 - The popup never offers a single purchase above `maxPopupSpend` (default 100g) and skips your own auctions.
 - Hours use your computer's clock.

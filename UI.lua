@@ -291,7 +291,20 @@ end
 ---------------------------------------------------------------------------
 local function searchAH(id)
     local name = ns.ItemInfo(id) or (ns.RealmDB().items[id] or {}).name
-    if not name or not AuctionFrame or not AuctionFrame:IsShown() then return end
+    if not name then return end
+    -- modern auction house (WoW Forever / C_AuctionHouse)
+    if AuctionHouseFrame and AuctionHouseFrame:IsShown() then
+        local bar = AuctionHouseFrame.SearchBar
+        if bar and bar.SetSearchText and bar.StartSearch then
+            if AuctionHouseFrame.SetDisplayMode and AuctionHouseFrameDisplayMode then
+                pcall(AuctionHouseFrame.SetDisplayMode, AuctionHouseFrame, AuctionHouseFrameDisplayMode.Buy)
+            end
+            bar:SetSearchText(name)
+            bar:StartSearch()
+        end
+        return
+    end
+    if not AuctionFrame or not AuctionFrame:IsShown() then return end
     if AuctionFrameTab1 and AuctionFrameTab_OnClick then AuctionFrameTab_OnClick(AuctionFrameTab1) end
     if BrowseName then
         BrowseName:SetText(name)
@@ -632,10 +645,15 @@ function UI.OnAHShow()
     if not frame then build() end
     UI.UpdateButtons()
     -- small launcher button on the auction frame
-    if AuctionFrame and not UI.ahButton then
-        local b = CreateFrame("Button", nil, AuctionFrame, "UIPanelButtonTemplate")
+    local ahFrame = AuctionHouseFrame or AuctionFrame
+    if ahFrame and not UI.ahButton then
+        local b = CreateFrame("Button", nil, ahFrame, "UIPanelButtonTemplate")
         b:SetSize(80, 20)
-        b:SetPoint("TOPRIGHT", AuctionFrame, "TOPRIGHT", -60, -14)
+        if ahFrame == AuctionHouseFrame then
+            b:SetPoint("TOPRIGHT", ahFrame, "TOPRIGHT", -30, -1)
+        else
+            b:SetPoint("TOPRIGHT", ahFrame, "TOPRIGHT", -60, -14)
+        end
         b:SetText("AHelper")
         b:SetScript("OnClick", UI.Toggle)
         UI.ahButton = b

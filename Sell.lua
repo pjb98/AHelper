@@ -95,3 +95,61 @@ ns.On("NEW_AUCTION_UPDATE", function()
     -- fill automatically the moment an item is dropped in, user can still edit
     if btn and btn:IsEnabled() then C_Timer.After(0.05, apply) end
 end)
+
+---------------------------------------------------------------------------
+-- Modern auction house (C_AuctionHouse clients such as WoW Forever)
+---------------------------------------------------------------------------
+local function sellFrameItemID(sf)
+    local loc = sf.GetItem and sf:GetItem()
+    if loc and loc.IsValid and loc:IsValid() and C_Item and C_Item.GetItemID then
+        return C_Item.GetItemID(loc)
+    end
+end
+
+local function setModernPrice(sf, unit)
+    local input = sf.PriceInput or (sf.GetPriceInput and sf:GetPriceInput())
+    if input and input.SetAmount then
+        input:SetAmount(unit)
+        if sf.UpdatePostState then pcall(sf.UpdatePostState, sf) end
+    end
+end
+
+local function updateModern(sf, autoApply)
+    local b = sf.AHelperBtn
+    local id = sellFrameItemID(sf)
+    if not id then b.label:SetText("") b:Disable() return end
+    local unit, why, vendorIt = Sell.Suggest(id)
+    if not unit then b.label:SetText("AHelper: no price data") b:Disable() return end
+    b.label:SetText("AHelper: " .. ns.Money(unit) .. " ea (" .. why .. ")")
+    b.unit = unit
+    if vendorIt then b:Disable() return end
+    b:Enable()
+    if autoApply then setModernPrice(sf, unit) end
+end
+
+local function buildModern()
+    local AHF = AuctionHouseFrame
+    if not AHF then return end
+    for _, key in ipairs({ "CommoditiesSellFrame", "ItemSellFrame" }) do
+        local sf = AHF[key]
+        if sf and not sf.AHelperBtn then
+            local b = CreateFrame("Button", nil, sf, "UIPanelButtonTemplate")
+            b:SetSize(110, 22)
+            b:SetPoint("TOPRIGHT", sf, "TOPRIGHT", -12, -12)
+            b:SetText("AHelper price")
+            b:Disable()
+            b.label = sf:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+            b.label:SetPoint("TOPRIGHT", b, "BOTTOMRIGHT", 0, -2)
+            b:SetScript("OnClick", function() if b.unit then setModernPrice(sf, b.unit) end end)
+            sf.AHelperBtn = b
+            if sf.SetItem then
+                -- Blizzard fills its own default price after a search; apply ours a moment later
+                hooksecurefunc(sf, "SetItem", function()
+                    C_Timer.After(1.0, function() updateModern(sf, true) end)
+                end)
+            end
+        end
+    end
+end
+
+ns.On("AUCTION_HOUSE_SHOW", function() pcall(buildModern) end)

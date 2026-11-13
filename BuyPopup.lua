@@ -12,6 +12,11 @@ local REASONS = {
     deal   = "|cffffcc00Far below market value|r - buy and relist",
 }
 
+-- modern auction house: purchases are prepared in the background while the popup is shown
+local function release(cand)
+    if cand and ns.Scanner and ns.Scanner.Release then ns.Scanner.Release(cand) end
+end
+
 local function sound()
     if not ns.settings.popupSound then return end
     local id = SOUNDKIT and (SOUNDKIT.AUCTION_WINDOW_OPEN or SOUNDKIT.RAID_WARNING) or 8959
@@ -93,6 +98,8 @@ local function build()
             -- the result list changed; the auction is re-offered (one more click) once the search finds it
             ns.Print("relocating auction, it will pop up again in a moment...")
             Popup.Next()
+        elseif res == "wait" then
+            ns.Print("still checking the live price, click Buy again in a moment")
         else
             Popup.Next()
         end
@@ -103,6 +110,7 @@ local function build()
             AHelperDB.ignore[f.cand.itemID] = true
             ns.Print("ignoring", f.cand.name or f.cand.itemID, "(/ahh ignore again to undo)")
             local id = f.cand.itemID
+            release(f.cand)
             for i = #queue, 1, -1 do if queue[i].itemID == id then table.remove(queue, i) end end
             f.cand = nil
             Popup.Show()
@@ -118,8 +126,10 @@ end
 function Popup.Show()
     if not f then build() end
     local cand = queue[1]
+    if f.cand and f.cand ~= cand then release(f.cand) end
     f.cand = cand
     if not cand then f:Hide() return end
+    if ns.Scanner and ns.Scanner.Prepare then ns.Scanner.Prepare(cand) end
     local name, link, quality = ns.ItemInfo(cand.itemID)
     cand.name = cand.name or name
     cand.link = cand.link or link
@@ -134,10 +144,21 @@ function Popup.Show()
     else
         f.line2:SetText("Market value: " .. ns.Money(cand.value))
     end
-    f.line3:SetText("Profit: " .. ns.Money(cand.profit) .. (cand.owner and ("   seller: " .. cand.owner) or ""))
+    local profitText = "Profit: " .. ns.Money(cand.profit)
+    if cand.priceChanged then profitText = profitText .. "  |cffff8800(price changed)|r" end
+    f.line3:SetText(profitText .. (cand.owner and ("   seller: " .. cand.owner) or ""))
     f.counter:SetText(#queue > 1 and ("1 of " .. #queue) or "")
-    f.buy:Enable()
-    f.buy:SetText("Buy")
+    if cand.gone then
+        f.buy:Disable()
+        f.buy:SetText("Gone")
+        C_Timer.After(1.2, function() if f.cand == cand then Popup.Next() end end)
+    elseif cand.loading or cand.quoting then
+        f.buy:Disable()
+        f.buy:SetText("Checking...")
+    else
+        f.buy:Enable()
+        f.buy:SetText("Buy")
+    end
     if not f:IsShown() then sound() end
     f:Show()
 end
@@ -158,12 +179,20 @@ function Popup.Push(cand, front)
     Popup.Show()
 end
 
+-- a candidate's live price/availability changed
+function Popup.Refresh(cand)
+    if f and f:IsShown() and f.cand == cand then Popup.Show() end
+end
+
 function Popup.Next()
+    release(f and f.cand)
+    if f then f.cand = nil end
     table.remove(queue, 1)
     Popup.Show()
 end
 
 function Popup.Clear()
+    release(f and f.cand)
     wipe(queue)
     if f then f.cand = nil; f:Hide() end
 end
