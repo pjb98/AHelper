@@ -348,6 +348,7 @@ local SETTINGS = {
     { key = "historyDays", label = "Days of history to keep", type = "num" },
     { key = "tooltip", label = "Show prices in item tooltips", type = "bool" },
     { key = "useAuctionator", label = "Use Auctionator prices when AHelper has none", type = "bool" },
+    { key = "minimap", label = "Show minimap button", type = "bool", onChange = function() ns.Minimap.Update() end },
 }
 
 local function buildSettings()
@@ -356,8 +357,8 @@ local function buildSettings()
     settingsPanel:SetPoint("BOTTOMRIGHT", -20, 40)
     settingsPanel.widgets = {}
     for i, s in ipairs(SETTINGS) do
-        local col = (i > 8) and 1 or 0
-        local y = -((i - 1) % 8) * 30
+        local col = (i > 9) and 1 or 0
+        local y = -((i - 1) % 9) * 30
         local x = col * 370
         if s.type == "bool" then
             local cb = CreateFrame("CheckButton", nil, settingsPanel, "UICheckButtonTemplate")
@@ -366,7 +367,10 @@ local function buildSettings()
             local t = cb:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
             t:SetPoint("LEFT", cb, "RIGHT", 4, 0)
             t:SetText(s.label)
-            cb:SetScript("OnClick", function(self) ns.settings[s.key] = self:GetChecked() and true or false end)
+            cb:SetScript("OnClick", function(self)
+                ns.settings[s.key] = self:GetChecked() and true or false
+                if s.onChange then s.onChange() end
+            end)
             cb.refresh = function() cb:SetChecked(ns.settings[s.key]) end
             settingsPanel.widgets[i] = cb
         else

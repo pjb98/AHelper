@@ -17,3 +17,4 @@ BuyPopup.lua
 Sell.lua
 Tooltip.lua
 UI.lua
+Minimap.lua

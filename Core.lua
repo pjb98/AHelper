@@ -23,6 +23,8 @@ local DEFAULTS = {
         hourMinSamples     = 3,     -- samples per hour bucket needed for time-of-day analysis
         hourMinSpreadPct   = 15,    -- min % spread between cheapest and priciest hour
         useAuctionator     = true,  -- fall back to Auctionator prices when we have no data
+        minimap            = true,  -- show the minimap button
+        minimapAngle       = 220,   -- minimap button position in degrees
     },
     realms   = {},  -- [realmKey] = { items = { [itemID] = itemRecord }, lastScan = ts, scans = n }
     watch    = {},  -- [itemID] = { maxPrice = copper|nil }  sniper watchlist
@@ -175,6 +177,7 @@ local function help()
     print("  /ahh unwatch <item> - remove item from watchlist")
     print("  /ahh ignore <item>  - never show buy popups for an item")
     print("  /ahh set <key> <v>  - change a setting (see /ahh settings)")
+    print("  /ahh minimap        - show/hide the minimap button")
     print("  /ahh settings       - list settings")
     print("  /ahh reset realm    - wipe price history for this realm/faction")
 end
@@ -216,6 +219,10 @@ SlashCmdList.AHELPER = function(msg)
             AHelperDB.ignore[id] = not AHelperDB.ignore[id] or nil
             ns.Print(AHelperDB.ignore[id] and "ignoring" or "no longer ignoring", (ns.ItemInfo(id)) or id)
         end
+    elseif cmd == "minimap" then
+        ns.settings.minimap = not ns.settings.minimap
+        ns.Minimap.Update()
+        ns.Print("minimap button", ns.settings.minimap and "shown" or "hidden")
     elseif cmd == "settings" then
         local keys = {}
         for k in pairs(ns.settings) do table.insert(keys, k) end
@@ -230,6 +237,7 @@ SlashCmdList.AHELPER = function(msg)
             ns.settings[key] = tonumber(val) or ns.settings[key]
         end
         ns.Print(key, "=", tostring(ns.settings[key]))
+        if key == "minimap" or key == "minimapAngle" then ns.Minimap.Update() end
     elseif cmd == "reset" and rest == "realm" then
         AHelperDB.realms[ns.RealmKey()] = nil
         ns.Print("history wiped for", ns.RealmKey())

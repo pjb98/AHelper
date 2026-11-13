@@ -22,6 +22,7 @@ A personal gold-making addon for the Classic Era client.
 | **Investments tab** | *cross-realm*: items much cheaper here than the median price on other realms. *dip*: items well below their own 30-day average that are still selling. |
 | **Watchlist** | Items the sniper always checks, each with an optional max price. Right-click any row in any tab to add/remove. |
 | **Sell helper** | When you drop an item in the Auctions tab it fills in an undercut price (but refuses to dump far below market) and warns you when an item is worth more at a vendor. |
+| **Minimap button** | Left-click opens the window, right-click runs a full scan (at the AH), shift-right-click toggles the sniper. Drag it around the minimap; hide it with `/ahh minimap` or on the Settings tab. |
 | **Tooltips** | Market value, lowest price, est. sales/day, other-realm median and best buy/sell hours on every item tooltip. |
 
 Row clicks: **click** = search it in the AH, **shift-click** = link in chat, **right-click** = watchlist, **ctrl-click** = ignore.
@@ -64,6 +65,7 @@ The default namespace is `dynamic-classic1x-<region>` (Classic Era). If your rea
 /ahh watch <item>    add to watchlist (link, name or id)
 /ahh unwatch <item>
 /ahh ignore <item>   toggle ignore for popups
+/ahh minimap         show/hide the minimap button
 /ahh settings        list settings
 /ahh set <key> <v>   change a setting (prices are in copper: 1g = 10000)
 /ahh reset realm     wipe this realm's history
