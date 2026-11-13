@@ -1,11 +1,19 @@
 name: Package and release
 
-# Push a tag like v0.2.0 to build AHelper-v0.2.0.zip, attach it to a GitHub Release,
-# and (if the CF_API_KEY secret + X-Curse-Project-ID are set) upload it to CurseForge.
+# Two ways to release:
+#   1. Push a tag like v0.2.0
+#   2. GitHub -> Actions -> "Package and release" -> Run workflow, and type a version (e.g. v0.2.0)
+# Builds AHelper-<version>.zip, attaches it to a GitHub Release (WowUp installs/updates from it),
+# and uploads to CurseForge if the CF_API_KEY secret + X-Curse-Project-ID are set.
 on:
   push:
     tags:
       - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version tag to create (e.g. v0.2.0)"
+        required: true
 
 permissions:
   contents: write
@@ -20,4 +28,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Create tag
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$VERSION" -m "AHelper $VERSION"
+          git push origin "$VERSION"
       - uses: BigWigsMods/packager@v2

@@ -10,7 +10,7 @@ A personal gold-making addon for the Classic Era client.
 
 ## Releases, CurseForge and addon managers
 
-Pushing a version tag builds a ready-to-install zip (folder already named `AHelper`, `tools/` left out) using `.github/workflows/release.yml`:
+Pushing a version tag (or running the workflow from the Actions tab with a version) builds a ready-to-install zip (folder already named `AHelper`, `tools/` left out) using `.github/workflows/release.yml`:
 
 ```bash
 git tag v0.2.0
