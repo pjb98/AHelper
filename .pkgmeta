@@ -1,0 +1,6 @@
+package-as: AHelper
+
+ignore:
+  - tools
+  - .github
+  - .gitignore

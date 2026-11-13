@@ -2,7 +2,11 @@
 local ADDON, ns = ...
 AHelper = ns -- global handle for /dump and macros
 
-ns.version = "0.1.0"
+do
+    local getMeta = (C_AddOns and C_AddOns.GetAddOnMetadata) or GetAddOnMetadata
+    local v = getMeta and getMeta(ADDON, "Version")
+    ns.version = (v and not v:find("^@")) and v or "dev"
+end
 
 local DEFAULTS = {
     settings = {

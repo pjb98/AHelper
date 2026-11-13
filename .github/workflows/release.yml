@@ -1,0 +1,23 @@
+name: Package and release
+
+# Push a tag like v0.2.0 to build AHelper-v0.2.0.zip, attach it to a GitHub Release,
+# and (if the CF_API_KEY secret + X-Curse-Project-ID are set) upload it to CurseForge.
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      CF_API_KEY: ${{ secrets.CF_API_KEY }}
+      GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: BigWigsMods/packager@v2

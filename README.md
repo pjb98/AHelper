@@ -8,6 +8,21 @@ A personal gold-making addon for the Classic Era client.
 2. If the addon shows as "out of date", tick **Load out of date AddOns** or update the `## Interface:` line in `AHelper.toc` to the current client build (type `/dump select(4, GetBuildInfo())` in game).
 3. Open the auction house and click the **AHelper** button (top-right of the AH window) or type `/ahh`.
 
+## Releases, CurseForge and addon managers
+
+Pushing a version tag builds a ready-to-install zip (folder already named `AHelper`, `tools/` left out) using `.github/workflows/release.yml`:
+
+```bash
+git tag v0.2.0
+```
+
+```bash
+git push origin v0.2.0
+```
+
+- **GitHub Release:** the zip is attached to a release on the repo's Releases page. Addon managers like WowUp can install and update from that.
+- **CurseForge:** create the project on CurseForge first, add `## X-Curse-Project-ID: <id>` to `AHelper.toc`, and add a repository secret `CF_API_KEY` (from <https://legacy.curseforge.com/account/api-tokens>). Later tags then upload to CurseForge too.
+
 ## Features
 
 | Feature | What it does |
