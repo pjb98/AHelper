@@ -1,0 +1,19 @@
+## Interface: 11507, 11508
+## Title: AHelper |cff33ff99Auction House Helper|r
+## Notes: Vendor-price snipes, farming targets, time-of-day price patterns, cross-realm investments and flips.
+## Author: pjb98
+## Version: 0.1.0
+## SavedVariables: AHelperDB
+## OptionalDeps: Auctionator
+## IconTexture: Interface\Icons\INV_Misc_Coin_02
+
+Core.lua
+FarmDB.lua
+ExternalData.lua
+Data.lua
+Scanner.lua
+Analysis.lua
+BuyPopup.lua
+Sell.lua
+Tooltip.lua
+UI.lua
