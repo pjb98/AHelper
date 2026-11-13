@@ -174,6 +174,18 @@ function A.Investments()
                     upside = (ref / nowPrice - 1) * 100, sold = sold, note = nRealms .. " realms",
                 })
             end
+            -- cheaper here than the TSM region average
+            local reg = ns.TSM and ns.TSM.RegionAvg(id)
+            if reg and nowPrice <= reg * (1 - pct / 100) then
+                local rate = ns.TSM.SaleRate(id)
+                if not rate or rate >= 0.05 then
+                    table.insert(rows, {
+                        id = id, name = itemName(id), kind = "region", now = nowPrice, ref = reg,
+                        upside = (reg / nowPrice - 1) * 100, sold = sold,
+                        note = rate and string.format("TSM, %d%% sell", rate * 100) or "TSM region",
+                    })
+                end
+            end
             -- dip vs 30 day average
             local m30, n30 = Data.Market(id, 30)
             if m30 and n30 >= 7 and nowPrice <= m30 * (1 - pct / 100) and sold >= 1 then

@@ -153,6 +153,7 @@ end
 function Data.Market(itemID, days, realmKey)
     local rec = ns.RealmDB(realmKey).items[itemID]
     days = days or 14
+    local own, ownDays = nil, 0
     if rec and rec.d then
         local today = ns.DayNumber()
         local wsum, sum, nDays = 0, 0, 0
@@ -165,17 +166,29 @@ function Data.Market(itemID, days, realmKey)
                 nDays = nDays + 1
             end
         end
-        if wsum > 0 then return sum / wsum, nDays end
+        if wsum > 0 then own, ownDays = sum / wsum, nDays end
     end
+    -- Not enough of our own history yet: use TSM's realm market value (only for the default lookup on this realm)
+    local trust = ns.settings.dealMinSamples or 3
+    if ownDays < trust and not realmKey and days == 14 and ns.TSM then
+        local t = ns.TSM.Market(itemID)
+        if t then return t, trust, "tsm" end
+    end
+    if own then return own, ownDays end
     if ns.settings.useAuctionator and Auctionator and Auctionator.API and Auctionator.API.v1 then
         local ok, price = pcall(Auctionator.API.v1.GetAuctionPriceByItemID, "AHelper", itemID)
-        if ok and price and price > 0 then return price, 0 end
+        if ok and price and price > 0 then return price, 0, "auctionator" end
     end
     return nil, 0
 end
 
 -- Average number of items estimated sold per day (only counting days where we scanned at least twice).
 function Data.SoldPerDay(itemID, days)
+    -- TSM's region sales data is far more reliable than our vanished-listing estimate
+    if ns.TSM then
+        local t = ns.TSM.SoldPerDay(itemID)
+        if t then return t, 99, "tsm" end
+    end
     local realm = ns.RealmDB()
     local rec = realm.items[itemID]
     if not rec then return 0, 0 end

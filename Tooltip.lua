@@ -6,19 +6,19 @@ local function hourLabel(h) return string.format("%02d:00", h) end
 local function addLines(tt, itemID)
     if not ns.settings or not ns.settings.tooltip or not itemID then return end
     local Data = ns.Data
-    local mkt, nDays = Data.Market(itemID)
+    local mkt, nDays, src = Data.Market(itemID)
     local rec = ns.RealmDB().items[itemID]
     if not mkt and not rec then return end
     tt:AddLine(" ")
-    tt:AddDoubleLine("|cff33ff99AHelper|r market" .. (nDays > 0 and (" (" .. nDays .. "d)") or ""), ns.Money(mkt), 1, 1, 1, 1, 1, 1)
+    tt:AddDoubleLine("|cff33ff99AHelper|r market" .. (src == "tsm" and " (TSM)" or src == "auctionator" and " (Auctionator)" or (nDays > 0 and (" (" .. nDays .. "d)") or "")), ns.Money(mkt), 1, 1, 1, 1, 1, 1)
     if rec and rec.last then
         local age = time() - rec.last.t
         local ageTxt = age < 3600 and (math.floor(age / 60) .. "m") or age < 86400 and (math.floor(age / 3600) .. "h") or (math.floor(age / 86400) .. "d")
         tt:AddDoubleLine("  Lowest (" .. ageTxt .. " ago), " .. rec.last.qty .. " listed", ns.Money(rec.last.min), 0.8, 0.8, 0.8, 1, 1, 1)
     end
-    local sold = Data.SoldPerDay(itemID)
+    local sold, _, soldSrc = Data.SoldPerDay(itemID)
     if sold > 0 then
-        tt:AddDoubleLine("  Est. sold per day", string.format("%.1f", sold), 0.8, 0.8, 0.8, 1, 1, 1)
+        tt:AddDoubleLine(soldSrc == "tsm" and "  Sold per day (TSM region)" or "  Est. sold per day", string.format("%.1f", sold), 0.8, 0.8, 0.8, 1, 1, 1)
     end
     local ref, n = Data.CrossRealm(itemID)
     if ref then

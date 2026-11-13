@@ -34,9 +34,11 @@ git push origin v0.2.0
 | **Flips tab** | Buy everything under 80% of market, relist at ~97%. Shows ROI and *Days* = how many days of normal sales it takes to sell what you'd buy (risk). |
 | **Farming tab** | Curated open-world farmables (cloth, herbs, ore, leather, elementals, fish, gems…) ranked by **Gold/day** = estimated units sold per day × market price, with farming spots and a 7d vs 30d trend. Tick *all items* to rank every item on the AH. Edit `FarmDB.lua` to add your own. |
 | **Time of Day tab** | Learns each item's price at every hour of the day (relative to its own average, so trends don't fool it) and lists items with a **consistent** cheap hour and expensive hour. Includes a whole-market by-hour chart. |
-| **Investments tab** | *cross-realm*: items much cheaper here than the median price on other realms. *dip*: items well below their own 30-day average that are still selling. |
+| **Investments tab** | *cross-realm*: items much cheaper here than the median price on other realms. *region*: cheaper than TSM's region-wide average. *dip*: items well below their own 30-day average that are still selling. |
 | **Watchlist** | Items the sniper always checks, each with an optional max price. Right-click any row in any tab to add/remove. |
 | **Sell helper** | When you drop an item in the Auctions tab it fills in an undercut price (but refuses to dump far below market) and warns you when an item is worth more at a vendor. |
+| **% of market on listings** | Like TSM: every row in the auction house (browse results, buy lists, competitor lists when selling) shows its price as a % of market value. Blue < 50%, green < 80%, yellow ≈ market, orange/red overpriced, **VENDOR** = cheaper than the vendor price. Move the label with the *% label position* setting if it overlaps a column. |
+| **TradeSkillMaster data** | If TSM is installed, AHelper uses TSM's market value until it has 3+ days of its own scans (deal popups work from day one), TSM's region sold-per-day for the Farming tab and tooltips, and TSM's region average for Investments. Turn off with *Use TradeSkillMaster price & sales data*. |
 | **Minimap button** | Left-click opens the window, right-click runs a full scan (at the AH), shift-right-click toggles the sniper. Drag it around the minimap; hide it with `/ahh minimap` or on the Settings tab. |
 | **Tooltips** | Market value, lowest price, est. sales/day, other-realm median and best buy/sell hours on every item tooltip. |
 

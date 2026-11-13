@@ -24,7 +24,7 @@ function fmt.trend(v)
     return string.format("%s%+d%%|r", c, math.floor(v + 0.5))
 end
 function fmt.kind(v)
-    local c = { vendor = "|cff40ff40", market = "|cffffcc00", dip = "|cff66ccff", ["cross-realm"] = "|cffff80ff" }
+    local c = { vendor = "|cff40ff40", market = "|cffffcc00", dip = "|cff66ccff", ["cross-realm"] = "|cffff80ff", region = "|cffff9933" }
     return (c[v] or "") .. (v or "") .. "|r"
 end
 function fmt.z(v)
@@ -105,7 +105,7 @@ local TABS = {
     },
     {
         name = "Investments",
-        info = "cross-realm: cheaper here than the median of other realms (your alts' scans + tools/fetch_prices.py data). dip: well below its own 30-day average while still selling.",
+        info = "cross-realm: cheaper than other realms (alts' scans / fetch_prices.py). region: cheaper than TSM's region average. dip: well below its own 30-day average.",
         rows = function() return ns.Analysis.Investments() end,
         sort = "upside",
         cols = {
@@ -362,6 +362,9 @@ local SETTINGS = {
     { key = "tooltip", label = "Show prices in item tooltips", type = "bool" },
     { key = "useAuctionator", label = "Use Auctionator prices when AHelper has none", type = "bool" },
     { key = "minimap", label = "Show minimap button", type = "bool", onChange = function() ns.Minimap.Update() end },
+    { key = "useTSM", label = "Use TradeSkillMaster price & sales data", type = "bool" },
+    { key = "showPct", label = "Show % of market on AH listings", type = "bool" },
+    { key = "pctOffset", label = "  % label position (more negative = left)", type = "num" },
 }
 
 local function buildSettings()
@@ -370,8 +373,8 @@ local function buildSettings()
     settingsPanel:SetPoint("BOTTOMRIGHT", -20, 40)
     settingsPanel.widgets = {}
     for i, s in ipairs(SETTINGS) do
-        local col = (i > 9) and 1 or 0
-        local y = -((i - 1) % 9) * 30
+        local col = (i > 10) and 1 or 0
+        local y = -((i - 1) % 10) * 30
         local x = col * 370
         if s.type == "bool" then
             local cb = CreateFrame("CheckButton", nil, settingsPanel, "UICheckButtonTemplate")

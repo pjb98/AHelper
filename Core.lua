@@ -28,6 +28,9 @@ local DEFAULTS = {
         hourMinSpreadPct   = 15,    -- min % spread between cheapest and priciest hour
         useAuctionator     = true,  -- fall back to Auctionator prices when we have no data
         minimap            = true,  -- show the minimap button
+        useTSM             = true,  -- read TradeSkillMaster prices/sales data when installed
+        showPct            = true,  -- show "% of market" on auction house listing rows
+        pctOffset          = -4,    -- horizontal position of that label (more negative = further left)
         minimapAngle       = 220,   -- minimap button position in degrees
     },
     realms   = {},  -- [realmKey] = { items = { [itemID] = itemRecord }, lastScan = ts, scans = n }
