@@ -110,6 +110,7 @@ end
 -- Full scan (GetAll)
 ---------------------------------------------------------------------------
 function Scanner.StartFullScan()
+    if not QueryAuctionItems then ns.Print("scanning not supported on this client's auction house API yet") return end
     if not Scanner.ahOpen then ns.Print("open the auction house first") return end
     if Scanner.state ~= "idle" then ns.Print("busy:", Scanner.state) return end
     local _, canAll = CanSendAuctionQuery()
@@ -211,6 +212,7 @@ local function snipeNext()
 end
 
 function Scanner.ToggleSniper()
+    if not QueryAuctionItems then ns.Print("sniping not supported on this client's auction house API yet") return end
     if not Scanner.sniper and not Scanner.ahOpen then ns.Print("open the auction house first") return end
     Scanner.sniper = not Scanner.sniper
     if Scanner.sniper then
@@ -269,6 +271,11 @@ end
 ---------------------------------------------------------------------------
 ns.On("AUCTION_HOUSE_SHOW", function()
     Scanner.ahOpen = true
+    if not QueryAuctionItems and not Scanner.apiWarned then
+        Scanner.apiWarned = true
+        ns.Print("|cffff5555this client uses the modern auction house API (C_AuctionHouse), which AHelper's scanner " ..
+            "does not support yet. Tooltips/analysis still load, but scanning and buying won't work.|r")
+    end
     if ns.UI and ns.UI.OnAHShow then ns.UI.OnAHShow() end
 end)
 

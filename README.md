@@ -4,7 +4,7 @@ A personal gold-making addon for the Classic Era client.
 
 ## Install
 
-1. Copy this folder into `World of Warcraft/_classic_era_/Interface/AddOns/` and name the folder **`AHelper`** (it must match `AHelper.toc`).
+1. Copy this folder into `World of Warcraft/_forever_/Interface/AddOns/` (or `_classic_era_` for Classic Era) and name the folder **`AHelper`** (it must match `AHelper.toc`).
 2. If the addon shows as "out of date", tick **Load out of date AddOns** or update the `## Interface:` line in `AHelper.toc` to the current client build (type `/dump select(4, GetBuildInfo())` in game).
 3. Open the auction house and click the **AHelper** button (top-right of the AH window) or type `/ahh`.
 
