@@ -39,7 +39,7 @@ end
 local TABS = {
     {
         name = "Deals",
-        info = "Listings from your last full scan that are below vendor price or far below market. Buy them from the popup, or click a row to search it.",
+        info = "Listings from your last full scan below vendor price or far below market. 'Queue all' loads them into the buy popup; press your Buy key for each.",
         rows = function() return ns.Analysis.Deals() end,
         sort = "profit",
         cols = {
@@ -248,6 +248,7 @@ function UI.Refresh()
     hourChart:SetShown(tab.topHeight ~= nil)
     watchPanel:SetShown(tab.name == "Watchlist")
     UI.farmToggle:SetShown(tab.name == "Farming")
+    UI.queueBtn:SetShown(tab.name == "Deals")
     settingsPanel:SetShown(tab.settings == true)
     list:SetShown(not tab.settings)
     header:SetShown(not tab.settings)
@@ -542,6 +543,20 @@ local function build()
     ft:SetPoint("LEFT", UI.farmToggle, "RIGHT", 2, 0)
     ft:SetText("all items")
     UI.farmToggle:SetScript("OnClick", function(self) UI.farmAll = self:GetChecked() UI.Refresh() end)
+
+    UI.queueBtn = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+    UI.queueBtn:SetSize(100, 22)
+    UI.queueBtn:SetPoint("BOTTOMRIGHT", -20, 34)
+    UI.queueBtn:SetText("Queue all")
+    UI.queueBtn:SetScript("OnClick", function()
+        if not ns.Scanner.ahOpen then ns.Print("open the auction house first") return end
+        local n = ns.Scanner.QueueDeals()
+        if n == 0 then
+            ns.Print("no deals to queue - do a full scan first")
+        else
+            ns.Print(n .. " deals queued. Press your Buy key (Key Bindings > AddOns > AHelper) or click Buy for each.")
+        end
+    end)
 
     -- hour chart (Time of Day tab)
     hourChart = CreateFrame("Frame", nil, frame)

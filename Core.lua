@@ -5,7 +5,12 @@ AHelper = ns -- global handle for /dump and macros
 do
     local getMeta = (C_AddOns and C_AddOns.GetAddOnMetadata) or GetAddOnMetadata
     local v = getMeta and getMeta(ADDON, "Version")
-    ns.version = (v and not v:find("^@")) and v or "dev"
+    BINDING_HEADER_AHELPER = "AHelper"
+BINDING_NAME_AHELPER_BUY = "Buy (current popup)"
+BINDING_NAME_AHELPER_SKIP = "Skip (current popup)"
+BINDING_NAME_AHELPER_TOGGLE = "Open / close window"
+
+ns.version = (v and not v:find("^@")) and v or "dev"
 end
 
 local DEFAULTS = {

@@ -108,6 +108,21 @@ local function checkCurrentPage()
     end
 end
 
+-- Re-offer every deal in the currently loaded results (after a full scan that is the whole AH)
+function Scanner.QueueDeals()
+    local n = 0
+    for i = 1, GetNumAuctionItems("list") do
+        local name, count, _, buyout, owner, itemID = readAuction(i)
+        local cand = itemID and Scanner.Evaluate(i, itemID, count, buyout, owner, vendorPrice(itemID), name, nil)
+        if cand then
+            Scanner.seen[cand.sig] = nil
+            offer(cand)
+            n = n + 1
+        end
+    end
+    return n
+end
+
 ---------------------------------------------------------------------------
 -- Full scan (GetAll)
 ---------------------------------------------------------------------------

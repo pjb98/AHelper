@@ -86,7 +86,9 @@ local function build()
         return b
     end
 
-    f.buy = button("Buy", 20, function()
+    f.buy = button("Buy", 20, function() Popup.BuyCurrent() end)
+    button("Skip", 122, function() Popup.Next() end)
+    f.doBuy = function()
         local cand = f.cand
         if not cand then return end
         local res = ns.Scanner.TryBuy(cand)
@@ -103,8 +105,7 @@ local function build()
         else
             Popup.Next()
         end
-    end)
-    button("Skip", 122, function() Popup.Next() end)
+    end
     button("Ignore item", 224, function()
         if f.cand then
             AHelperDB.ignore[f.cand.itemID] = true
@@ -147,7 +148,8 @@ function Popup.Show()
     local profitText = "Profit: " .. ns.Money(cand.profit)
     if cand.priceChanged then profitText = profitText .. "  |cffff8800(price changed)|r" end
     f.line3:SetText(profitText .. (cand.owner and ("   seller: " .. cand.owner) or ""))
-    f.counter:SetText(#queue > 1 and ("1 of " .. #queue) or "")
+    local key = GetBindingKey and GetBindingKey("AHELPER_BUY")
+    f.counter:SetText((#queue > 1 and ("1 of " .. #queue) or "") .. (key and ("   buy key: " .. key) or ""))
     if cand.gone then
         f.buy:Disable()
         f.buy:SetText("Gone")
@@ -164,6 +166,9 @@ function Popup.Show()
 end
 
 function Popup.Push(cand, front)
+    if cand.sig then
+        for _, q in ipairs(queue) do if q.sig == cand.sig then return end end
+    end
     -- highest profit first, but keep the shown one on top
     if front then
         table.insert(queue, 1, cand)
@@ -177,6 +182,25 @@ function Popup.Push(cand, front)
     end
     if #queue > 200 then table.remove(queue) end
     Popup.Show()
+end
+
+-- Buy whatever the popup shows. Needs a real click or key press (button, keybind or /click macro).
+function Popup.BuyCurrent()
+    if not f or not f:IsShown() or not f.cand then return end
+    f.doBuy()
+end
+
+function Popup.HasCurrent()
+    return f and f:IsShown() and f.cand ~= nil
+end
+
+-- Keybinding entry points (see Bindings.xml)
+function AHelper_BuyNext()
+    if Popup.HasCurrent() then Popup.BuyCurrent() else ns.Print("nothing to buy right now") end
+end
+
+function AHelper_SkipNext()
+    if Popup.HasCurrent() then Popup.Next() end
 end
 
 -- a candidate's live price/availability changed

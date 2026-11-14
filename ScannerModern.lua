@@ -347,6 +347,14 @@ local function evaluateScan(onlyIDs)
     return n
 end
 
+-- Re-offer every deal from the last full scan (Deals tab "Queue all")
+function Scanner.QueueDeals()
+    for sig in pairs(Scanner.seen) do
+        if sig:sub(1, 1) == "r" then Scanner.seen[sig] = nil end
+    end
+    return evaluateScan()
+end
+
 function Scanner.StartFullScan()
     if not Scanner.ahOpen then ns.Print("open the auction house first") return end
     if Scanner.state ~= "idle" then ns.Print("busy:", Scanner.state) return end

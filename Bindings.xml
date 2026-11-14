@@ -1,0 +1,11 @@
+<Bindings>
+	<Binding name="AHELPER_BUY" header="AHELPER" category="ADDONS">
+		AHelper_BuyNext()
+	</Binding>
+	<Binding name="AHELPER_SKIP" category="ADDONS">
+		AHelper_SkipNext()
+	</Binding>
+	<Binding name="AHELPER_TOGGLE" category="ADDONS">
+		AHelper.UI.Toggle()
+	</Binding>
+</Bindings>

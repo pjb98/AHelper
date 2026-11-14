@@ -39,6 +39,7 @@ git push origin v0.2.0
 | **Sell helper** | When you drop an item in the Auctions tab it fills in an undercut price (but refuses to dump far below market) and warns you when an item is worth more at a vendor. |
 | **% of market on listings** | Like TSM: every row in the auction house (browse results, buy lists, competitor lists when selling) shows its price as a % of market value. Blue < 50%, green < 80%, yellow ≈ market, orange/red overpriced, **VENDOR** = cheaper than the vendor price. Move the label with the *% label position* setting if it overlaps a column. |
 | **TradeSkillMaster data** | If TSM is installed, AHelper uses TSM's market value until it has 3+ days of its own scans (deal popups work from day one), TSM's region sold-per-day for the Farming tab and tooltips, and TSM's region average for Investments. Turn off with *Use TradeSkillMaster price & sales data*. |
+| **Buy keybind & Queue all** | Bind **Buy** / **Skip** under *Key Bindings → AddOns → AHelper* (a key or the mouse wheel). The *Queue all* button on the Deals tab loads every deal into the popup, then each key press buys the next one. Stackables buy every qualifying unit in one press. |
 | **Minimap button** | Left-click opens the window, right-click runs a full scan (at the AH), shift-right-click toggles the sniper. Drag it around the minimap; hide it with `/ahh minimap` or on the Settings tab. |
 | **Tooltips** | Market value, lowest price, est. sales/day, other-realm median and best buy/sell hours on every item tooltip. |
 
@@ -96,6 +97,6 @@ Most settings can also be changed on the **Settings** tab.
   - Stackable goods (cloth, herbs, ore...) are bought as "commodities". The popup asks the server for a live price first, so the Buy button says *Checking...* for a moment. It then buys the cheapest units, and shows *(price changed)* if the total moved.
   - Gear is bought as a specific auction found by a live search.
 
-- Blizzard requires a real mouse click for every purchase, so the addon can't buy automatically. That's why it uses a popup with a Buy button.
+- Blizzard requires a real click or key press for every purchase, so the addon can't buy on its own. Tools that press keys or click for you break the Terms of Service. One key press per purchase (the Buy keybind) is how TSM works too, and is allowed.
 - The popup never offers a single purchase above `maxPopupSpend` (default 100g) and skips your own auctions.
 - Hours use your computer's clock.
